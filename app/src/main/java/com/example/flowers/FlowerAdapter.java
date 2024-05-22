@@ -1,45 +1,60 @@
 package com.example.flowers;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class FlowerAdapter extends RecyclerView.Adapter<FlowerAdapter.ViewHolder> {
-    private List<Flower> flowers;
+    private final static String PHOTO_URL = "https://services.hanselandpetal.com/photos/";
+    private List<Flower> mFlowers;
+    private Context mContext;
 
     FlowerAdapter(List<Flower> flowers) {
-        this.flowers = flowers;
+        this.mFlowers = flowers;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item, parent, false);
+        mContext = parent.getContext();
+        View v = LayoutInflater.from(mContext).inflate(R.layout.list_item, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Flower flower = flowers.get(position);
-        holder.flowerTextView.setText(flower.toString());
+        Flower flower = mFlowers.get(position);
+        holder.nameTextView.setText(flower.getName());
+
+        Picasso.with(mContext)
+                .load(PHOTO_URL + flower.getPhoto())
+                .resize(200, 150)
+                .into(holder.flowerImageView);
     }
 
     @Override
     public int getItemCount() {
-        if (flowers == null)
+        if (mFlowers == null)
             return 0;
-        return flowers.size();
+        return mFlowers.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        TextView flowerTextView;
+        TextView nameTextView;
+        ImageView flowerImageView;
 
         ViewHolder(View itemView) {
             super(itemView);
-            flowerTextView = itemView.findViewById(R.id.textView_item_flower);
+            nameTextView = itemView.findViewById(R.id.nameTextView);
+            flowerImageView = itemView.findViewById(R.id.itemImageView);
         }
     }
 }
